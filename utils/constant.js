@@ -1,0 +1,3 @@
+exports.requiredProps = {
+  SIGNUP: ["email"],
+};
