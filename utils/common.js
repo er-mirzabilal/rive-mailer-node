@@ -7,9 +7,9 @@ exports.isEmailAlreadyUsed = async (email) => {
     try {
       const user = await UserService.findBy({ where: { email: email } });
       if (user) {
-        resolve(true);
+        resolve(user);
       }
-      resolve(false);
+      resolve(null);
     } catch (error) {
       reject(error);
     }
