@@ -1,5 +1,6 @@
 const EmailValidator = require("../services/emailVerifier.js");
 const UserService = require("../services/user.js");
+const jwt = require('jsonwebtoken');
 const {
   sendEmailVerifyAlert,
   isEmailAlreadyUsed,
@@ -83,6 +84,27 @@ exports.resendEmail = async (req, res) => {
     handleError(res, err);
   }
 };
+exports.verifyEmail = async (req, res) => {
+  const { token } = req.query;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    const user = await UserService.findBy({email: decoded.email});
+    if(user.isEmailVerified && user.verifiedAt !== null){
+      return handleError(res, { message: 'Email Already Verified: ' + decoded.email, statusCode: 409 })
+    }
+    
+    // Mark the user as verified in the database here
+    await UserService.update({isEmailVerified: true , verifiedAt: new Date()} , { where: { email: decoded.email } });
+
+    handleResponse(res, 200, 'Email verified successfully ' +  decoded.email );
+    // res.status(200).json({ message: 'Email verified successfully', email: decoded.email });
+  } catch (err) {
+    console.log(err.message);
+    handleError(res, { message: 'Invalid or expired token', statusCode: 400 })
+  }
+}
 
 exports.homePage = async (req, res) => {
   handleResponse(res, 200, "Rive app backend api working!");

@@ -4,6 +4,7 @@ const {
   signupUser,
   removeUser,
   resendEmail,
+  verifyEmail,
 } = require("../controllers/guest.js");
 const { validateRequiredProps } = require("../middlewares/validator.js");
 const { requiredProps } = require("../utils/constant.js");
@@ -20,6 +21,9 @@ router.put(
   validateRequiredProps(requiredProps.RESEND),
   resendEmail
 );
+
+router.get('/verify-email', verifyEmail );
+
 router.get("/", homePage);
 
 module.exports = router;
