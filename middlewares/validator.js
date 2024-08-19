@@ -1,7 +1,7 @@
 module.exports.validateRequiredProps = (requiredProps) => {
   return function (req, res, next) {
     const missingProps = requiredProps.filter(
-      (prop) => !req.body.hasOwnProperty(prop)
+      (prop) => !req.body.hasOwnProperty(prop) && !req.params.hasOwnProperty(prop)
     );
 
     if (missingProps.length > 0) {
